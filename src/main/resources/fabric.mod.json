@@ -4,13 +4,14 @@
   "version": "${version}",
 
   "name": "BTA Light Overlay",
-  "description": "Light up your base efficiently!",
+  "description": "Light up your world more efficiently!",
   "authors": [
     "Lunatic Uncle"
   ],
   "contact": {
-    "homepage": "",
-    "sources": ""
+    "homepage": "https://github.com/Uncle0698",
+    "sources": "https://github.com/Uncle0698/BTALightOverlay",
+		"issues": "https://github.com/Uncle0698/BTALightOverlay/issues"
   },
 
 	"icon": "icon.png",
