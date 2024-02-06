@@ -1,3 +1,3 @@
 # BTA Light Overlay
-Lights up your world more efficiently!
+Light up your world more efficiently!
 
