@@ -1,8 +1,6 @@
 package lunaticuncle.btalightoverlay;
 
-import lunaticuncle.btalightoverlay.mixin.interfaces.IOptions;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.Minecraft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
