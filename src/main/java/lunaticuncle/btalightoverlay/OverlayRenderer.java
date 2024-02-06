@@ -52,7 +52,7 @@ public class OverlayRenderer {
 
 		//TODO: Add radius to configs
 		for(double dx = -24; dx <= 24; ++dx) {
-			for(double dy = -24; dy <= 24; ++dy) {
+			for(double dy = -24; dy <= 12; ++dy) {
 				for(double dz = -24; dz <= 24; ++dz) {
 					Vec3d queryPos = playerCoordinate.addVector(dx, dy, dz);
 
