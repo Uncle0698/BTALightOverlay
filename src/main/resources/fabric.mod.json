@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "btalightoverlay",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This mod aims to help new BTA modders.",
+  "name": "BTA Light Overlay",
+  "description": "Light up your base efficiently!",
   "authors": [
-    "Turnip Labs"
+    "Lunatic Uncle"
   ],
   "contact": {
     "homepage": "",
@@ -19,20 +19,14 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-			"turniplabs.examplemod.ExampleMod"
+			"lunaticuncle.btalightoverlay.BTALightOverlay"
     ],
-		"beforeGameStart": [
-			"turniplabs.examplemod.ExampleMod"
-		],
 		"afterGameStart": [
-			"turniplabs.examplemod.ExampleMod"
-		],
-		"recipesReady": [
-			"turniplabs.examplemod.ExampleMod"
+			"lunaticuncle.btalightoverlay.BTALightOverlay"
 		]
 	},
   "mixins": [
-      "examplemod.mixins.json"
+		"btalightoverlay.mixins.json"
   ],
 
   "depends": {
