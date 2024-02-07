@@ -149,7 +149,6 @@ public class OverlayRenderer {
 
 		GL11.glPopMatrix(); // Scaling end
 		GL11.glPopMatrix(); // Translating and Rotating end
-		mc.renderEngine.bindTexture(mc.renderEngine.getTexture("/terrain.png")); // Fix water and glass rendering
 	}
 
 	private boolean canSkipDraw(CameraFrustum frustum, World world, Vec3d pos, float partialTick) {

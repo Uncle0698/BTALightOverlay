@@ -24,7 +24,7 @@ public class WorldRendererMixin {
 	private Minecraft mc;
 
 
-	@Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/debug/Debug;change(Ljava/lang/String;)V", ordinal = 9, shift = At.Shift.BEFORE))
+	@Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/debug/Debug;change(Ljava/lang/String;)V", ordinal = 10, shift = At.Shift.BEFORE))
 	private void BTALightOverlayRender(float partialTick, long updateRenderersUntil, CallbackInfo ci) {
 		overlayRenderer.draw(mc, partialTick);
 	}
