@@ -1,5 +1,7 @@
 package lunaticuncle.btalightoverlay.mixin.mixins;
 
+import lunaticuncle.btalightoverlay.gui.TextBoxComponent;
+import lunaticuncle.btalightoverlay.gui.TextBoxComponents;
 import lunaticuncle.btalightoverlay.mixin.interfaces.IOptions;
 import net.minecraft.client.option.GameSettings;
 import net.minecraft.client.option.KeyBinding;
@@ -13,6 +15,7 @@ public class GameSettingsMixin implements IOptions {
 
 	@Unique
 	public final KeyBinding keyToggleLightOverlay = new KeyBinding("btalightoverlay.key.toggleoverlay").bindKeyboard(KEY_F9);
+
 
 	@Override
 	public KeyBinding bTALightOverlay$getKeyToggleLightOverlay() {
