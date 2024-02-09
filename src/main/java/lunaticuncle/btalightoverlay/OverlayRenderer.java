@@ -21,8 +21,8 @@ import org.lwjgl.opengl.GL11;
 public class OverlayRenderer {
 	private boolean canRender;
 	//TODO: Add colors to configs
-	private Color colorDark;
-	private Color colorLit;
+	private final Color colorDark;
+	private final Color colorLit;
 
 
 	public OverlayRenderer(){
@@ -50,7 +50,8 @@ public class OverlayRenderer {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		Vec3d playerCoordinate = getPlayerCoordinate(thePlayer);
 
-		//TODO: Add radius to configs
+		//TODO: - Add radius to configs
+		//      - optimize this thing by not checking for these large amounts of block every partialTick
 		for(double dx = -24; dx <= 24; ++dx) {
 			for(double dy = -24; dy <= 12; ++dy) {
 				for(double dz = -24; dz <= 24; ++dz) {
@@ -76,7 +77,7 @@ public class OverlayRenderer {
 					}
 
 					Color color = blockLight == 0 ? colorDark : colorLit;
-					drawNumber(mc, mc.fontRenderer, queryPos.xCoord, queryPos.yCoord-1+offsetY, queryPos.zCoord, Direction.getHorizontalDirection(thePlayer.yRot), color, String.valueOf(blockLight));
+					drawNumber(mc.fontRenderer, queryPos.xCoord, queryPos.yCoord-1+offsetY, queryPos.zCoord, Direction.getHorizontalDirection(thePlayer.yRot), color, String.valueOf(blockLight));
 				}
 			}
 		}
@@ -92,7 +93,7 @@ public class OverlayRenderer {
 		return Vec3d.createVector(x, y, z);
 	}
 
-	private void drawNumber(Minecraft mc, FontRenderer fontRenderer, double x, double y, double z, Direction facing, Color color, String num) {
+	private void drawNumber(FontRenderer fontRenderer, double x, double y, double z, Direction facing, Color color, String num) {
 		GL11.glPushMatrix(); // Translating and Rotating
 
 		double offset1 = 0.53125;
