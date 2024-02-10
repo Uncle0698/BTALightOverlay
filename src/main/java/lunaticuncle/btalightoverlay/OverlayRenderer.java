@@ -12,10 +12,11 @@ import net.minecraft.core.util.helper.Color;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.phys.AABB;
-import net.minecraft.core.util.phys.Vec3d;
 import net.minecraft.core.world.World;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class OverlayRenderer {
@@ -24,14 +25,20 @@ public class OverlayRenderer {
 	private final Color colorDark;
 	private final Color colorLit;
 
+	private List<BlockPos> surroundingPos;
+	private long ticks;
+	private boolean isWorldInit;
 
 	public OverlayRenderer(){
 		canRender = false;
-		colorDark = new Color();
-		colorLit = new Color();
 
+		colorDark = new Color();
 		colorDark.setRGB(255, 0, 0);
+		colorLit = new Color();
 		colorLit.setRGB(0, 255, 0);
+
+		this.surroundingPos = new ArrayList<>();
+		isWorldInit = false;
 	}
 
 	public void draw(Minecraft mc, float partialTick) {
@@ -48,52 +55,52 @@ public class OverlayRenderer {
 		GL11.glTranslated(-cam.getX(partialTick), -cam.getY(partialTick), -cam.getZ(partialTick));
 
 		EntityPlayerSP thePlayer = mc.thePlayer;
-		Vec3d playerCoordinate = getPlayerCoordinate(thePlayer);
+		if(ticks > 200 || !isWorldInit) { // One second interval, a partialTick = 1/10 tick
+			ticks = 0;
+			updatePos(thePlayer);
+			isWorldInit = true;
 
-		//TODO: - Add radius to configs
-		//      - optimize this thing by not checking for these large amounts of block every partialTick
-		for(double dx = -24; dx <= 24; ++dx) {
-			for(double dy = -24; dy <= 12; ++dy) {
-				for(double dz = -24; dz <= 24; ++dz) {
-					Vec3d queryPos = playerCoordinate.addVector(dx, dy, dz);
-
-					if(canSkipDraw(frustum, world, queryPos, partialTick)) {
-						continue;
-					}
-
-					//TODO: Add option to toggle between Block/Sky/Both light information
-					int blockLight = world.getSavedLightValue(LightLayer.Block, (int) queryPos.xCoord, (int) queryPos.yCoord, (int) queryPos.zCoord);
-
-					Block block = Block.blocksList[world.getBlockId((int) queryPos.xCoord, (int) queryPos.yCoord, (int) queryPos.zCoord)];
-					double offsetY = 0;
-
-					if(block instanceof BlockLayerBase) {
-						int meta = world.getBlockMetadata((int) queryPos.xCoord, (int) queryPos.yCoord, (int) queryPos.zCoord);
-						if(block instanceof BlockLayerLeaves) {
-							meta -= 128;
-						}
-						offsetY = (meta+1) * 0.125;
-
-					}
-
-					Color color = blockLight == 0 ? colorDark : colorLit;
-					drawNumber(mc.fontRenderer, queryPos.xCoord, queryPos.yCoord-1+offsetY, queryPos.zCoord, Direction.getHorizontalDirection(thePlayer.yRot), color, String.valueOf(blockLight));
-				}
-			}
 		}
 
+        //TODO: - Add radius to configs
+        for (BlockPos queryPos : this.surroundingPos) {
+            if (canSkipDraw(frustum, world, queryPos, partialTick)) {
+                continue;
+            }
+
+            //TODO: Add option to toggle between Block/Sky/Both light information
+            int blockLight = world.getSavedLightValue(LightLayer.Block, queryPos.x, queryPos.y, queryPos.z);
+
+            Block block = Block.blocksList[world.getBlockId(queryPos.x, queryPos.y, queryPos.z)];
+            double offsetY = 0;
+
+            if (block instanceof BlockLayerBase) {
+                int meta = world.getBlockMetadata(queryPos.x, queryPos.y, queryPos.z);
+                if (block instanceof BlockLayerLeaves) {
+                    meta -= 128;
+                }
+                offsetY = (meta + 1) * 0.125;
+
+            }
+
+            Color color = blockLight == 0 ? colorDark : colorLit;
+            drawNumber(mc.fontRenderer, queryPos.x, queryPos.y - 1 + offsetY, queryPos.z, Direction.getHorizontalDirection(thePlayer.yRot), color, String.valueOf(blockLight));
+
+        }
 		GL11.glPopMatrix(); // World Render end
+		++ticks;
 	}
 
-	private Vec3d getPlayerCoordinate(EntityPlayerSP thePlayer) {
+	private BlockPos getPlayerCoordinate(EntityPlayerSP thePlayer) {
 		double x = MathHelper.floor_double(thePlayer.x);
 		double y = MathHelper.floor_double(thePlayer.y);
 		double z = MathHelper.floor_double(thePlayer.z);
 
-		return Vec3d.createVector(x, y, z);
+		return new BlockPos((int) x, (int) y, (int) z);
 	}
 
 	private void drawNumber(FontRenderer fontRenderer, double x, double y, double z, Direction facing, Color color, String num) {
+		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPushMatrix(); // Translating and Rotating
 
 		double offset1 = 0.53125;
@@ -150,14 +157,15 @@ public class OverlayRenderer {
 
 		GL11.glPopMatrix(); // Scaling end
 		GL11.glPopMatrix(); // Translating and Rotating end
+		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
 
-	private boolean canSkipDraw(CameraFrustum frustum, World world, Vec3d pos, float partialTick) {
-		int x = (int) pos.xCoord;
-		int y = (int) pos.yCoord;
-		int z = (int) pos.zCoord;
+	private boolean canSkipDraw(CameraFrustum frustum, World world, BlockPos pos, float partialTick) {
+		int x = pos.x;
+		int y = pos.y;
+		int z = pos.z;
 		return !canSpawnAt(world, x, y, z) || isTopSolid(world, x, y, z)
-			|| !frustum.isVisible(new AABB(x + 6, y + 6, z + 6, x - 6, y - 6, z - 6), partialTick);
+			|| !frustum.isVisible(new AABB(x + 1, y, z + 1, x - 1, y, z - 1), partialTick);
 	}
 
 
@@ -175,6 +183,20 @@ public class OverlayRenderer {
 
 	public void toggleRender() {
 		this.canRender = !this.canRender;
+	}
+
+	private void updatePos(EntityPlayerSP thePlayer) {
+		this.surroundingPos = new ArrayList<>();
+
+		BlockPos playerCoordinate = getPlayerCoordinate(thePlayer);
+		for(int dx = -16; dx <= 16; ++dx) {
+			for (int dy = -16; dy <= 16; ++dy) {
+				for (int dz = -16; dz <= 16; ++dz) {
+					BlockPos queryPos = new BlockPos(playerCoordinate.x + dx, playerCoordinate.y + dy, playerCoordinate.z + dz);
+					surroundingPos.add(queryPos);
+				}
+			}
+		}
 	}
 
 }

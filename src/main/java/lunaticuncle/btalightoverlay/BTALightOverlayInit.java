@@ -17,7 +17,7 @@ public class BTALightOverlayInit {
 	public static TomlConfigHandler config;
 
 	public static void initTOMLConfig() {
-		Toml toml = new Toml("BTA Light Overlay configurations.");
+		Toml toml = new Toml("BTA Light Overlay configurations. NOT USED FOR NOW");
 
 		toml.addCategory("Color values settings","colors");
 			toml.addCategory("Light level markers", "colors.markers");
@@ -58,10 +58,6 @@ public class BTALightOverlayInit {
 		textBoxComponent2 = new TextBoxComponent("options.test", "Text...");
 
 		BTALightOverlayOptions = new OptionsPage("btalightoverlay.options.title")
-			.withComponent(new OptionsCategory("btalightoverlay.options.category.general")
-				.withComponent(textBoxComponent1))
-			.withComponent(new OptionsCategory("btalightoverlay.options.category.others")
-				.withComponent(textBoxComponent2))
 			.withComponent(new OptionsCategory("btalightoverlay.options.category.keybinds")
 				.withComponent(new KeyBindingComponent(modSettings.bTALightOverlay$getKeyToggleLightOverlay())));
 
