@@ -43,6 +43,7 @@ public class OverlayRenderer {
 
 	public void draw(Minecraft mc, float partialTick) {
 		if(!canRender) {
+			isWorldInit = false;
 			return;
 		}
 
@@ -59,7 +60,6 @@ public class OverlayRenderer {
 			ticks = 0;
 			updatePos(thePlayer);
 			isWorldInit = true;
-
 		}
 
         //TODO: - Add radius to configs
