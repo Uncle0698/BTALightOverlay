@@ -14,8 +14,8 @@ public class BTALightOverlay implements ModInitializer, GameStartEntrypoint {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     @Override
     public void onInitialize() {
-		/*BTALightOverlayInit.initTOMLConfig();
-		LOGGER.info("BTALightOverlay config initialized.");*/
+		BTALightOverlayInit.initTOMLConfig();
+		LOGGER.info("BTALightOverlay config initialized.");
     }
 
 

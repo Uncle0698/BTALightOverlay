@@ -17,29 +17,23 @@ public class BTALightOverlayInit {
 	public static TomlConfigHandler config;
 
 	public static void initTOMLConfig() {
-		Toml toml = new Toml("BTA Light Overlay configurations. NOT USED FOR NOW");
+		Toml toml = new Toml("BTA Light Overlay configurations.");
 
 		toml.addCategory("Color values settings","colors");
-			toml.addCategory("Light level markers", "colors.markers");
-				toml.addCategory("Block light level","colors.markers.block");
-					toml.addEntry("colors.markers.block.colorDark","Color for light level below threshold", "#FFFFFF");
-					toml.addEntry("colors.markers.block.colorLit", "Color for light level above threshold", "#FFFFFF");
-				toml.addCategory("Sky light level", "colors.markers.sky");
-					toml.addEntry("colors.markers.sky.colorDark","Color for light level below threshold", "#FFFFFF");
-					toml.addEntry("colors.markers.sky.colorLit", "Color for light level above threshold", "#FFFFFF");
-			toml.addCategory("Light level numbers", "colors.numbers");
-				toml.addCategory("Block light level","colors.numbers.block");
-					toml.addEntry("colors.numbers.block.colorDark","Color for light level below threshold", "#FFFFFF");
-					toml.addEntry("colors.numbers.block.colorLit", "Color for light level above threshold", "#FFFFFF");
-				toml.addCategory("Sky light level", "colors.numbers.sky");
-					toml.addEntry("colors.numbers.sky.colorDark","Color for light level below threshold", "#FFFFFF");
-					toml.addEntry("colors.numbers.sky.colorLit", "Color for light level above threshold", "#FFFFFF");
+			toml.addEntry("colors.markerColorDark","The hostile spawnable spot color for marker", "#FFFFFF");
+			toml.addEntry("colors.markerColorBlockLit", "The safe spot color for mamrker", "#FFFFFF");
+			toml.addEntry("colors.markerColorSkyLit", "The safe spot (during day) color for marker", "#FFFFFF");
+			toml.addEntry("colors.numberColorBlockDark","The hostile spawnable spot color for block light value", "#FFFFFF");
+			toml.addEntry("colors.numberColorBlockLit", "The safe spot color for block light value", "#FFFFFF");
+			toml.addEntry("colors.numberColorSkyDark","The hostile spawnable spot color for sky light value", "#FFFFFF");
+			toml.addEntry("colors.numberColorSkyLit", "The safe spot color for sky light value", "#FFFFFF");
 		toml.addCategory("General settings","general");
-			toml.addCategory("Overlay effective ranges","general.radius");
-				toml.addEntry("general.radius.horizontal","Horizontal", 24);
-				toml.addEntry("general.radius.vertical","Vertical", 8);
-			toml.addEntry("general.condition.number","Displays number under certain conditions","always");
-			toml.addEntry("general.condition.markers","Displays markers under certain conditions","always");
+			toml.addEntry("general.rangeVertical","The vertical range of the light overlay", 16);
+			toml.addEntry("general.rangeHorizontal","The horizontal range of the light overlay", 16);
+			toml.addEntry("general.markersCondition", "When should markers be shown, values: never, spawnable, always", "spawnable");
+			toml.addEntry("general.numbersCondition", "When should numbers be shown, values: never, spawnable, always", "never");
+			toml.addEntry("general.numbers", "Which light value should be shown, values: none, block, sky, both", "block");
+
 
 		config = new TomlConfigHandler(MOD_ID, toml);
 	}
