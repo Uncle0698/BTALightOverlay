@@ -14,10 +14,17 @@ import turniplabs.halplibe.util.toml.Toml;
 import static lunaticuncle.btalightoverlay.BTALightOverlay.MOD_ID;
 
 public class BTALightOverlayInit {
-	public static TomlConfigHandler config;
+	public static TomlConfigHandler tomlConfigHandler;
 
 	public static void initTOMLConfig() {
 		Toml toml = new Toml("BTA Light Overlay configurations.");
+
+		toml.addCategory("General settings","general");
+			toml.addEntry("general.rangeVertical","The vertical range of the light overlay", 16);
+			toml.addEntry("general.rangeHorizontal","The horizontal range of the light overlay", 16);
+			toml.addEntry("general.markersCondition", "When should markers be shown, values: never, spawnable, always", "spawnable");
+			toml.addEntry("general.numbersCondition", "When should numbers be shown, values: never, spawnable, always", "never");
+			toml.addEntry("general.numbers", "Which light value should be shown, values: none, block, sky, both", "block");
 
 		toml.addCategory("Color values settings","colors");
 			toml.addEntry("colors.markerColorDark","The hostile spawnable spot color for marker", "#FFFFFF");
@@ -27,29 +34,17 @@ public class BTALightOverlayInit {
 			toml.addEntry("colors.numberColorBlockLit", "The safe spot color for block light value", "#FFFFFF");
 			toml.addEntry("colors.numberColorSkyDark","The hostile spawnable spot color for sky light value", "#FFFFFF");
 			toml.addEntry("colors.numberColorSkyLit", "The safe spot color for sky light value", "#FFFFFF");
-		toml.addCategory("General settings","general");
-			toml.addEntry("general.rangeVertical","The vertical range of the light overlay", 16);
-			toml.addEntry("general.rangeHorizontal","The horizontal range of the light overlay", 16);
-			toml.addEntry("general.markersCondition", "When should markers be shown, values: never, spawnable, always", "spawnable");
-			toml.addEntry("general.numbersCondition", "When should numbers be shown, values: never, spawnable, always", "never");
-			toml.addEntry("general.numbers", "Which light value should be shown, values: none, block, sky, both", "block");
 
-
-		config = new TomlConfigHandler(MOD_ID, toml);
+		tomlConfigHandler = new TomlConfigHandler(MOD_ID, toml);
 	}
 
 	public static IOptions modSettings;
 	public static OptionsPage BTALightOverlayOptions;
 	public static TextBoxComponents textBoxComponents;
 	public static OverlayRenderer overlayRenderer;
-	public static TextBoxComponent textBoxComponent1;
-	public static TextBoxComponent textBoxComponent2;
 
 	public static void initMod() {
 		modSettings = (IOptions) Minecraft.getMinecraft(Minecraft.class).gameSettings;
-
-		textBoxComponent1 = new TextBoxComponent("options.colorLit", "0~15");
-		textBoxComponent2 = new TextBoxComponent("options.test", "Text...");
 
 		BTALightOverlayOptions = new OptionsPage("btalightoverlay.options.title")
 			.withComponent(new OptionsCategory("btalightoverlay.options.category.keybinds")
@@ -61,10 +56,6 @@ public class BTALightOverlayInit {
 			new OptionsCategory("btalightoverlay.options.category.keybinds.explicit")
 				.withComponent(new KeyBindingComponent(modSettings.bTALightOverlay$getKeyToggleLightOverlay()))
 		);
-
-		textBoxComponents = new TextBoxComponents();
-		textBoxComponents.addTextBoxComponent(textBoxComponent1);
-		textBoxComponents.addTextBoxComponent(textBoxComponent2);
 
 		overlayRenderer = new OverlayRenderer();
 	}

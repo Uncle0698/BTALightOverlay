@@ -25,7 +25,7 @@ public class OverlayRenderer {
 	private final Color colorDark;
 	private final Color colorLit;
 
-	private List<BlockPos> surroundingPos;
+	private List<PosInfo> surroundingPos;
 	private long ticks;
 	private boolean isWorldInit;
 
@@ -39,6 +39,25 @@ public class OverlayRenderer {
 
 		this.surroundingPos = new ArrayList<>();
 		isWorldInit = false;
+	}
+
+	public void update(Minecraft mc) {
+
+		if(!canRender) {
+			isWorldInit = false;
+			return;
+		}
+
+		EntityPlayerSP thePlayer = mc.thePlayer;
+
+		if(ticks > 20 || !isWorldInit) {
+			ticks = 0;
+			updatePos(thePlayer);
+			isWorldInit = true;
+			System.out.println("Updated");
+		}
+
+		++ticks;
 	}
 
 	public void draw(Minecraft mc, float partialTick) {
@@ -56,14 +75,9 @@ public class OverlayRenderer {
 		GL11.glTranslated(-cam.getX(partialTick), -cam.getY(partialTick), -cam.getZ(partialTick));
 
 		EntityPlayerSP thePlayer = mc.thePlayer;
-		if(ticks > 200 || !isWorldInit) { // One second interval, a partialTick = 1/10 tick
-			ticks = 0;
-			updatePos(thePlayer);
-			isWorldInit = true;
-		}
 
         //TODO: - Add radius to configs
-        for (BlockPos queryPos : this.surroundingPos) {
+        for (PosInfo queryPos : this.surroundingPos) {
             if (canSkipDraw(frustum, world, queryPos, partialTick)) {
                 continue;
             }
@@ -88,15 +102,14 @@ public class OverlayRenderer {
 
         }
 		GL11.glPopMatrix(); // World Render end
-		++ticks;
 	}
 
-	private BlockPos getPlayerCoordinate(EntityPlayerSP thePlayer) {
+	private PosInfo getPlayerCoordinate(EntityPlayerSP thePlayer) {
 		double x = MathHelper.floor_double(thePlayer.x);
 		double y = MathHelper.floor_double(thePlayer.y);
 		double z = MathHelper.floor_double(thePlayer.z);
 
-		return new BlockPos((int) x, (int) y, (int) z);
+		return new PosInfo((int) x, (int) y, (int) z);
 	}
 
 	private void drawNumber(FontRenderer fontRenderer, double x, double y, double z, Direction facing, Color color, String num) {
@@ -160,7 +173,7 @@ public class OverlayRenderer {
 		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
 
-	private boolean canSkipDraw(CameraFrustum frustum, World world, BlockPos pos, float partialTick) {
+	private boolean canSkipDraw(CameraFrustum frustum, World world, PosInfo pos, float partialTick) {
 		int x = pos.x;
 		int y = pos.y;
 		int z = pos.z;
@@ -188,15 +201,16 @@ public class OverlayRenderer {
 	private void updatePos(EntityPlayerSP thePlayer) {
 		this.surroundingPos = new ArrayList<>();
 
-		BlockPos playerCoordinate = getPlayerCoordinate(thePlayer);
+		PosInfo playerCoordinate = getPlayerCoordinate(thePlayer);
 		for(int dx = -16; dx <= 16; ++dx) {
 			for (int dy = -16; dy <= 16; ++dy) {
 				for (int dz = -16; dz <= 16; ++dz) {
-					BlockPos queryPos = new BlockPos(playerCoordinate.x + dx, playerCoordinate.y + dy, playerCoordinate.z + dz);
+					PosInfo queryPos = new PosInfo(playerCoordinate.x + dx, playerCoordinate.y + dy, playerCoordinate.z + dz);
 					surroundingPos.add(queryPos);
 				}
 			}
 		}
 	}
+
 
 }
