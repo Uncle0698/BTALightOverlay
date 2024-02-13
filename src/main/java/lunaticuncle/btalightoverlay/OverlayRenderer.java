@@ -42,7 +42,6 @@ public class OverlayRenderer {
 	}
 
 	public void update(Minecraft mc) {
-
 		if(!canRender) {
 			isWorldInit = false;
 			return;
@@ -50,12 +49,13 @@ public class OverlayRenderer {
 
 		EntityPlayerSP thePlayer = mc.thePlayer;
 
+		//TODO: - Add interval to configs
 		if(ticks > 20 || !isWorldInit) {
 			ticks = 0;
 			updatePos(thePlayer);
 			isWorldInit = true;
-			System.out.println("Updated");
 		}
+		updateLightLevels(mc);
 
 		++ticks;
 	}
@@ -83,7 +83,6 @@ public class OverlayRenderer {
             }
 
             //TODO: Add option to toggle between Block/Sky/Both light information
-            int blockLight = world.getSavedLightValue(LightLayer.Block, queryPos.x, queryPos.y, queryPos.z);
 
             Block block = Block.blocksList[world.getBlockId(queryPos.x, queryPos.y, queryPos.z)];
             double offsetY = 0;
@@ -97,8 +96,8 @@ public class OverlayRenderer {
 
             }
 
-            Color color = blockLight == 0 ? colorDark : colorLit;
-            drawNumber(mc.fontRenderer, queryPos.x, queryPos.y - 1 + offsetY, queryPos.z, Direction.getHorizontalDirection(thePlayer.yRot), color, String.valueOf(blockLight));
+            Color color = queryPos.lightLevelBlock == 0 ? colorDark : colorLit;
+            drawNumber(mc.fontRenderer, queryPos.x, queryPos.y - 1 + offsetY, queryPos.z, Direction.getHorizontalDirection(thePlayer.yRot), color, String.valueOf(queryPos.lightLevelBlock));
 
         }
 		GL11.glPopMatrix(); // World Render end
@@ -212,5 +211,13 @@ public class OverlayRenderer {
 		}
 	}
 
+	private void updateLightLevels(Minecraft mc) {
+		World world = mc.theWorld;
+
+		for(PosInfo queryPos : this.surroundingPos) {
+            queryPos.lightLevelBlock = world.getSavedLightValue(LightLayer.Block, queryPos.x, queryPos.y, queryPos.z);
+			queryPos.lightLevelSky = world.getSavedLightValue(LightLayer.Sky, queryPos.x, queryPos.y, queryPos.z);
+		}
+	}
 
 }

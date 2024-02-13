@@ -1,6 +1,5 @@
 package lunaticuncle.btalightoverlay;
 
-import lunaticuncle.btalightoverlay.gui.TextBoxComponent;
 import lunaticuncle.btalightoverlay.gui.TextBoxComponents;
 import lunaticuncle.btalightoverlay.mixin.interfaces.IOptions;
 import net.minecraft.client.Minecraft;
