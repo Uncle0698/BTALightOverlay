@@ -32,6 +32,7 @@ public class OverlayRenderer {
 	private final Color colorMarkerDark;
 	private final Color colorMarkerBlockLit;
 	private final Color colorMarkerSkyLit;
+
 	public OverlayRenderer(){
 		this.canRender = false;
 		this.surroundingPos = new ArrayList<>();
@@ -243,7 +244,6 @@ public class OverlayRenderer {
 		return !canSpawnAt(world, x, y, z) || isTopSolid(world, x, y, z)
 			|| !frustum.isVisible(new AABB(x + 1, y, z + 1, x - 1, y, z - 1), partialTick);
 	}
-
 
 	//Copied from SpawnerMobs
 	private boolean canSpawnAt(World world, int x, int y, int z) {

@@ -8,8 +8,6 @@ import turniplabs.halplibe.util.GameStartEntrypoint;
 
 
 public class BTALightOverlay implements ModInitializer, GameStartEntrypoint {
-
-
     public static final String MOD_ID = "btalightoverlay";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     @Override
@@ -17,7 +15,6 @@ public class BTALightOverlay implements ModInitializer, GameStartEntrypoint {
 		BTALightOverlayInit.initTOMLConfig();
 		LOGGER.info("BTALightOverlay config initialized.");
     }
-
 
 	@Override
 	public void beforeGameStart() {
