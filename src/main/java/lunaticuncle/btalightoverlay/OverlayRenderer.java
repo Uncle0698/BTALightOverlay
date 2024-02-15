@@ -54,7 +54,8 @@ public class OverlayRenderer {
 
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		// Clamp to 1-20
-		int interval = Configs.General.UPDATE_INTERVAL > 20 ? 20 : Configs.General.UPDATE_INTERVAL < 1 ? 1 : Configs.General.UPDATE_INTERVAL;
+		@SuppressWarnings("ManualMinMaxCalculation")
+		int interval = Configs.General.UPDATE_INTERVAL > 20 ? 20 : (Configs.General.UPDATE_INTERVAL < 1 ? 1 : Configs.General.UPDATE_INTERVAL);
 
 		if(ticks > interval || !isWorldInit) {
 			ticks = 0;
@@ -263,8 +264,10 @@ public class OverlayRenderer {
 	private void updatePos(EntityPlayerSP thePlayer) {
 		this.surroundingPos = new ArrayList<>();
 		// Clamp to 1-32
-		int horizontalRange = Configs.General.HORIZONTAL_RANGE > 32 ? 32 : Configs.General.HORIZONTAL_RANGE < 1 ? 1 : Configs.General.HORIZONTAL_RANGE;
-		int verticalRange = Configs.General.VERTICAL_RANGE > 32 ? 32 : Configs.General.VERTICAL_RANGE < 1 ? 1 : Configs.General.VERTICAL_RANGE;
+		@SuppressWarnings("ManualMinMaxCalculation")
+		int horizontalRange = Configs.General.HORIZONTAL_RANGE > 32 ? 32 : (Configs.General.HORIZONTAL_RANGE < 1 ? 1 : Configs.General.HORIZONTAL_RANGE);
+		@SuppressWarnings("ManualMinMaxCalculation")
+		int verticalRange = Configs.General.VERTICAL_RANGE > 32 ? 32 : (Configs.General.VERTICAL_RANGE < 1 ? 1 : Configs.General.VERTICAL_RANGE);
 
 		PosInfo playerCoordinate = getPlayerCoordinate(thePlayer);
 		for(int dx = -horizontalRange; dx <= horizontalRange; ++dx) {
