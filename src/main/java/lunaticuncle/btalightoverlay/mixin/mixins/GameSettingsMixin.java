@@ -1,7 +1,5 @@
 package lunaticuncle.btalightoverlay.mixin.mixins;
 
-import lunaticuncle.btalightoverlay.gui.TextBoxComponent;
-import lunaticuncle.btalightoverlay.gui.TextBoxComponents;
 import lunaticuncle.btalightoverlay.mixin.interfaces.IOptions;
 import net.minecraft.client.option.GameSettings;
 import net.minecraft.client.option.KeyBinding;

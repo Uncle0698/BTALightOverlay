@@ -1,14 +1,13 @@
 package lunaticuncle.btalightoverlay;
 
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.client.render.FontRenderer;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.camera.ICamera;
 import net.minecraft.client.render.culling.CameraFrustum;
 import net.minecraft.core.block.*;
 import net.minecraft.core.enums.LightLayer;
-import net.minecraft.core.util.helper.Color;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.phys.AABB;
@@ -18,27 +17,29 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.awt.Color;
+
 
 public class OverlayRenderer {
 	private boolean canRender;
 	//TODO: Add colors to configs
-	private final Color colorDark;
-	private final Color colorLit;
-
 	private List<PosInfo> surroundingPos;
 	private long ticks;
 	private boolean isWorldInit;
+	private final Color colorBlockDark;
+	private final Color colorBlockLit;
+	private final Color colorSkyDark;
+	private final Color colorSkyLit;
 
 	public OverlayRenderer(){
-		canRender = false;
-
-		colorDark = new Color();
-		colorDark.setRGB(255, 0, 0);
-		colorLit = new Color();
-		colorLit.setRGB(0, 255, 0);
-
+		this.canRender = false;
 		this.surroundingPos = new ArrayList<>();
-		isWorldInit = false;
+		this.isWorldInit = false;
+
+		colorBlockDark = decode(Configs.Colors.NUMBER_BLOCK_DARK);
+		colorBlockLit = decode(Configs.Colors.NUMBER_BLOCK_LIT);
+		colorSkyDark = decode(Configs.Colors.NUMBER_SKY_DARK);
+		colorSkyLit = decode(Configs.Colors.NUMBER_SKY_LIT);
 	}
 
 	public void update(Minecraft mc) {
@@ -69,20 +70,18 @@ public class OverlayRenderer {
 		ICamera cam = mc.activeCamera;
 		CameraFrustum frustum = new CameraFrustum(cam);
 		World world = mc.theWorld;
+		EntityPlayerSP thePlayer = mc.thePlayer;
+		Tessellator tessellator = Tessellator.instance;
 
 		GL11.glPushMatrix(); // World Render start
 
 		GL11.glTranslated(-cam.getX(partialTick), -cam.getY(partialTick), -cam.getZ(partialTick));
-
-		EntityPlayerSP thePlayer = mc.thePlayer;
 
         //TODO: - Add radius to configs
         for (PosInfo queryPos : this.surroundingPos) {
             if (canSkipDraw(frustum, world, queryPos, partialTick)) {
                 continue;
             }
-
-            //TODO: Add option to toggle between Block/Sky/Both light information
 
             Block block = Block.blocksList[world.getBlockId(queryPos.x, queryPos.y, queryPos.z)];
             double offsetY = 0;
@@ -93,11 +92,16 @@ public class OverlayRenderer {
                     meta -= 128;
                 }
                 offsetY = (meta + 1) * 0.125;
-
             }
 
-            Color color = queryPos.lightLevelBlock == 0 ? colorDark : colorLit;
-            drawNumber(mc.fontRenderer, queryPos.x, queryPos.y - 1 + offsetY, queryPos.z, Direction.getHorizontalDirection(thePlayer.yRot), color, String.valueOf(queryPos.lightLevelBlock));
+			String numbersMode = Configs.General.NUMBERS_MODE;
+			String markersCondition = Configs.General.MARKERS_CONDITION;
+			if(!numbersMode.equalsIgnoreCase("none")) {
+				drawNumber(mc.fontRenderer, queryPos, Direction.getHorizontalDirection(thePlayer.yRot), offsetY);
+			}
+			if(!markersCondition.equalsIgnoreCase("never")) {
+				drawMarker(tessellator, queryPos, offsetY);
+			}
 
         }
 		GL11.glPopMatrix(); // World Render end
@@ -111,37 +115,40 @@ public class OverlayRenderer {
 		return new PosInfo((int) x, (int) y, (int) z);
 	}
 
-	private void drawNumber(FontRenderer fontRenderer, double x, double y, double z, Direction facing, Color color, String num) {
+	private void drawNumber(FontRenderer fontRenderer, PosInfo pos, Direction facing, double offsetY) {
+		double x = pos.x;
+		double y = pos.y - 1 + offsetY;
+		double z = pos.z;
+
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPushMatrix(); // Translating and Rotating
 
-		double offset1 = 0.53125;
-		double offset2 = 0.25;
+		double offset = 0.0625;
 
-		switch (facing)
+		switch (facing) // Translation
 		{
 			case NORTH:
-				GL11.glTranslated(x+offset1, y+1.01, z+offset2);
+				GL11.glTranslated(x+offset*8.5, y+1.01, z+offset*5.25);
 				break;
 
 			case EAST:
-				GL11.glTranslated(x+offset2*3, y+1.01, z+offset1);
+				GL11.glTranslated(x+offset*10.75, y+1.01, z+offset*8.5);
 				break;
 
 			case SOUTH:
-				GL11.glTranslated(x+offset1-0.0625, y+1.01, z+offset2*3);
+				GL11.glTranslated(x+offset*7.5, y+1.01, z+offset*10.75);
 				break;
 
 			case WEST:
-				GL11.glTranslated(x+offset2, y+1.01, z+offset1-0.0625);
+				GL11.glTranslated(x+offset*5.25, y+1.01, z+offset*7.5);
 				break;
 
 			default:
 		}
 
-		GL11.glRotated(90, 1, 0, 0);
+		GL11.glRotated(90, 1, 0, 0); // Rotation
 
-		switch (facing)
+		switch (facing) // Facing Rotation
 		{
 			case NORTH:
 				break;
@@ -162,14 +169,55 @@ public class OverlayRenderer {
 		}
 
 		GL11.glPushMatrix(); // Scaling
-		GL11.glScaled(0.07, 0.07, 0.07);
+		GL11.glScaled(0.05, 0.05, 0.05);
 
-		int length = fontRenderer.getStringWidth(num);
-		fontRenderer.drawString(num, -(length/2), 0, color.getARGB());
+		String mode = Configs.General.NUMBERS_MODE;
+		Color color;
+		if(mode.equalsIgnoreCase("block") || mode.equalsIgnoreCase("both")) {
+			String num = String.valueOf(pos.lightLevelBlock);
+			int length = fontRenderer.getStringWidth(num);
+			color = pos.lightLevelBlock == 0 ? colorBlockDark : colorBlockLit;
+			fontRenderer.drawString(num, -(length/2), 0, color.getRGB());
+		}
+
+		if(mode.equalsIgnoreCase("sky") || mode.equalsIgnoreCase("both")) {
+			GL11.glPushMatrix(); // Sky value translating
+
+			offset = 1.25;
+			GL11.glTranslated(offset*2.5, offset*4, -0.1);
+
+			String num = String.valueOf(pos.lightLevelSky);
+			int length = fontRenderer.getStringWidth(num);
+			color = pos.lightLevelSky == 0 ? colorSkyDark : colorSkyLit;
+			fontRenderer.drawString(num, -(length/2), 0, color.getRGB());
+
+			GL11.glPopMatrix(); // Sky value end
+		}
 
 		GL11.glPopMatrix(); // Scaling end
 		GL11.glPopMatrix(); // Translating and Rotating end
 		GL11.glDisable(GL11.GL_CULL_FACE);
+	}
+
+	private void drawMarker(Tessellator tessellator, PosInfo pos, double offsetY) {
+		double x = pos.x;
+		double y = pos.y + offsetY + 0.03;
+		double z = pos.z;
+
+		double offset = 0.0625;
+
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glLineWidth(2.0f);
+		GL11.glColor3d(1.0, 0.0, 0.0);
+		tessellator.startDrawing(GL11.GL_LINES);
+
+		tessellator.addVertex(x+offset, y, z+offset);
+		tessellator.addVertex(x+1-offset, y, z+1-offset);
+		tessellator.addVertex(x+offset, y, z+1-offset);
+		tessellator.addVertex(x+1-offset, y, z+offset);
+
+		tessellator.draw();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	private boolean canSkipDraw(CameraFrustum frustum, World world, PosInfo pos, float partialTick) {
@@ -220,4 +268,11 @@ public class OverlayRenderer {
 		}
 	}
 
+	private Color decode(String nm) {
+		try {
+			return Color.decode(nm);
+		} catch (NumberFormatException e) {
+			return Color.white;
+		}
+	}
 }

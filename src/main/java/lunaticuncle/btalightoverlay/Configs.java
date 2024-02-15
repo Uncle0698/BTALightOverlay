@@ -1,3 +1,5 @@
+package lunaticuncle.btalightoverlay;
+
 import static lunaticuncle.btalightoverlay.BTALightOverlayInit.tomlConfigHandler;
 
 public class Configs {
@@ -5,7 +7,6 @@ public class Configs {
 		public static final int VERTICAL_RANGE = tomlConfigHandler.getInt("general.rangeVertical");
 		public static final int HORIZONTAL_RANGE = tomlConfigHandler.getInt("general.rangeHorizontal");
 		public static final String MARKERS_CONDITION = tomlConfigHandler.getString("general.markersCondition");
-		public static final String NUMBERS_CONDITION = tomlConfigHandler.getString("general.numbersCondition");
 		public static final String NUMBERS_MODE = tomlConfigHandler.getString("general.numbers");
 	}
 
