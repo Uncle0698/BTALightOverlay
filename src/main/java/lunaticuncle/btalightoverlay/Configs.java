@@ -8,6 +8,7 @@ public class Configs {
 		public static final int HORIZONTAL_RANGE = tomlConfigHandler.getInt("general.rangeHorizontal");
 		public static final String MARKERS_CONDITION = tomlConfigHandler.getString("general.markersCondition");
 		public static final String NUMBERS_MODE = tomlConfigHandler.getString("general.numbers");
+		public static final int UPDATE_INTERVAL = tomlConfigHandler.getInt("general.updateInterval");
 	}
 
 	public static class Colors {

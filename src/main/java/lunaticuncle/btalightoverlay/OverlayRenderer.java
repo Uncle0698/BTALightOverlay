@@ -53,9 +53,10 @@ public class OverlayRenderer {
 		}
 
 		EntityPlayerSP thePlayer = mc.thePlayer;
+		// Clamp to 1-20
+		int interval = Configs.General.UPDATE_INTERVAL > 20 ? 20 : Configs.General.UPDATE_INTERVAL < 1 ? 1 : Configs.General.UPDATE_INTERVAL;
 
-		//TODO: - Add interval to configs
-		if(ticks > 20 || !isWorldInit) {
+		if(ticks > interval || !isWorldInit) {
 			ticks = 0;
 			updatePos(thePlayer);
 			isWorldInit = true;
@@ -81,7 +82,6 @@ public class OverlayRenderer {
 
 		GL11.glTranslated(-cam.getX(partialTick), -cam.getY(partialTick), -cam.getZ(partialTick));
 
-        //TODO: - Add radius to configs
         for (PosInfo queryPos : this.surroundingPos) {
             if (canSkipDraw(frustum, world, queryPos, partialTick)) {
                 continue;
@@ -262,11 +262,14 @@ public class OverlayRenderer {
 
 	private void updatePos(EntityPlayerSP thePlayer) {
 		this.surroundingPos = new ArrayList<>();
+		// Clamp to 1-32
+		int horizontalRange = Configs.General.HORIZONTAL_RANGE > 32 ? 32 : Configs.General.HORIZONTAL_RANGE < 1 ? 1 : Configs.General.HORIZONTAL_RANGE;
+		int verticalRange = Configs.General.VERTICAL_RANGE > 32 ? 32 : Configs.General.VERTICAL_RANGE < 1 ? 1 : Configs.General.VERTICAL_RANGE;
 
 		PosInfo playerCoordinate = getPlayerCoordinate(thePlayer);
-		for(int dx = -16; dx <= 16; ++dx) {
-			for (int dy = -16; dy <= 16; ++dy) {
-				for (int dz = -16; dz <= 16; ++dz) {
+		for(int dx = -horizontalRange; dx <= horizontalRange; ++dx) {
+			for (int dy = -verticalRange; dy <= verticalRange; ++dy) {
+				for (int dz = -horizontalRange; dz <= horizontalRange; ++dz) {
 					PosInfo queryPos = new PosInfo(playerCoordinate.x + dx, playerCoordinate.y + dy, playerCoordinate.z + dz);
 					surroundingPos.add(queryPos);
 				}

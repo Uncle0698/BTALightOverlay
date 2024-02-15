@@ -19,10 +19,11 @@ public class BTALightOverlayInit {
 		Toml toml = new Toml("BTA Light Overlay configurations.");
 
 		toml.addCategory("General settings","general");
-			toml.addEntry("general.rangeVertical","The vertical range of the light overlay", 16);
-			toml.addEntry("general.rangeHorizontal","The horizontal range of the light overlay", 16);
-			toml.addEntry("general.markersCondition", "When should markers be shown, values: never, spawnable, always", "always");
+			toml.addEntry("general.rangeVertical","The vertical range of the light overlay, range: 1-32", 6);
+			toml.addEntry("general.rangeHorizontal","The horizontal range of the light overlay, range: 1-32", 24);
+			toml.addEntry("general.markersCondition", "When should markers be shown, values: never, spawnable, always", "spawnable");
 			toml.addEntry("general.numbers", "Which light value should be shown, values: none, block, sky, both", "none");
+			toml.addEntry("general.updateInterval", "How often should the light overlay update in ticks, range: 1-20", 20);
 
 		toml.addCategory("Color values settings","colors");
 			toml.addEntry("colors.markerColorDark","The hostile spawnable spot color for marker", "#ff0000");
