@@ -21,13 +21,13 @@ public class BTALightOverlayInit {
 		toml.addCategory("General settings","general");
 			toml.addEntry("general.rangeVertical","The vertical range of the light overlay", 16);
 			toml.addEntry("general.rangeHorizontal","The horizontal range of the light overlay", 16);
-			toml.addEntry("general.markersCondition", "When should markers be shown, values: never, spawnable, always", "spawnable");
-			toml.addEntry("general.numbers", "Which light value should be shown, values: none, block, sky, both", "block");
+			toml.addEntry("general.markersCondition", "When should markers be shown, values: never, spawnable, always", "always");
+			toml.addEntry("general.numbers", "Which light value should be shown, values: none, block, sky, both", "none");
 
 		toml.addCategory("Color values settings","colors");
-			toml.addEntry("colors.markerColorDark","The hostile spawnable spot color for marker", "#FFFFFF");
-			toml.addEntry("colors.markerColorBlockLit", "The safe spot color for marker", "#FFFFFF");
-			toml.addEntry("colors.markerColorSkyLit", "The safe spot (during day) color for marker", "#FFFFFF");
+			toml.addEntry("colors.markerColorDark","The hostile spawnable spot color for marker", "#ff0000");
+			toml.addEntry("colors.markerColorBlockLit", "The safe spot color for marker", "#007f00");
+			toml.addEntry("colors.markerColorSkyLit", "The safe spot (during day and clear weather) color for marker", "#ffff00");
 			toml.addEntry("colors.numberColorBlockDark","The hostile spawnable spot color for block light value", "#ff0000");
 			toml.addEntry("colors.numberColorBlockLit", "The safe spot color for block light value", "#00ff00");
 			toml.addEntry("colors.numberColorSkyDark","The hostile spawnable spot color for sky light value", "#ffff00");

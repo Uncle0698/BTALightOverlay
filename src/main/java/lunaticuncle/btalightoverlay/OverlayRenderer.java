@@ -22,24 +22,28 @@ import java.awt.Color;
 
 public class OverlayRenderer {
 	private boolean canRender;
-	//TODO: Add colors to configs
 	private List<PosInfo> surroundingPos;
 	private long ticks;
 	private boolean isWorldInit;
-	private final Color colorBlockDark;
-	private final Color colorBlockLit;
-	private final Color colorSkyDark;
-	private final Color colorSkyLit;
-
+	private final Color colorNumberBlockDark;
+	private final Color colorNumberBlockLit;
+	private final Color colorNumberSkyDark;
+	private final Color colorNumberSkyLit;
+	private final Color colorMarkerDark;
+	private final Color colorMarkerBlockLit;
+	private final Color colorMarkerSkyLit;
 	public OverlayRenderer(){
 		this.canRender = false;
 		this.surroundingPos = new ArrayList<>();
 		this.isWorldInit = false;
 
-		colorBlockDark = decode(Configs.Colors.NUMBER_BLOCK_DARK);
-		colorBlockLit = decode(Configs.Colors.NUMBER_BLOCK_LIT);
-		colorSkyDark = decode(Configs.Colors.NUMBER_SKY_DARK);
-		colorSkyLit = decode(Configs.Colors.NUMBER_SKY_LIT);
+		colorNumberBlockDark = decode(Configs.Colors.NUMBER_BLOCK_DARK);
+		colorNumberBlockLit = decode(Configs.Colors.NUMBER_BLOCK_LIT);
+		colorNumberSkyDark = decode(Configs.Colors.NUMBER_SKY_DARK);
+		colorNumberSkyLit = decode(Configs.Colors.NUMBER_SKY_LIT);
+		colorMarkerDark = decode(Configs.Colors.MARKER_DARK);
+		colorMarkerBlockLit = decode(Configs.Colors.MARKER_BLOCK_LIT);
+		colorMarkerSkyLit = decode(Configs.Colors.MARKER_SKY_LIT);
 	}
 
 	public void update(Minecraft mc) {
@@ -176,7 +180,7 @@ public class OverlayRenderer {
 		if(mode.equalsIgnoreCase("block") || mode.equalsIgnoreCase("both")) {
 			String num = String.valueOf(pos.lightLevelBlock);
 			int length = fontRenderer.getStringWidth(num);
-			color = pos.lightLevelBlock == 0 ? colorBlockDark : colorBlockLit;
+			color = pos.lightLevelBlock == 0 ? colorNumberBlockDark : colorNumberBlockLit;
 			fontRenderer.drawString(num, -(length/2), 0, color.getRGB());
 		}
 
@@ -188,7 +192,7 @@ public class OverlayRenderer {
 
 			String num = String.valueOf(pos.lightLevelSky);
 			int length = fontRenderer.getStringWidth(num);
-			color = pos.lightLevelSky == 0 ? colorSkyDark : colorSkyLit;
+			color = pos.lightLevelSky == 0 ? colorNumberSkyDark : colorNumberSkyLit;
 			fontRenderer.drawString(num, -(length/2), 0, color.getRGB());
 
 			GL11.glPopMatrix(); // Sky value end
@@ -200,6 +204,15 @@ public class OverlayRenderer {
 	}
 
 	private void drawMarker(Tessellator tessellator, PosInfo pos, double offsetY) {
+		if(pos.lightLevelBlock > 0 && !Configs.General.MARKERS_CONDITION.equalsIgnoreCase("always")) {
+			return;
+		}
+
+		Color color = colorMarkerBlockLit;
+		if(pos.lightLevelBlock == 0) {
+			color = pos.lightLevelSky > 4 ? colorMarkerSkyLit : colorMarkerDark;
+		}
+
 		double x = pos.x;
 		double y = pos.y + offsetY + 0.03;
 		double z = pos.z;
@@ -207,8 +220,9 @@ public class OverlayRenderer {
 		double offset = 0.0625;
 
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glLineWidth(2.0f);
-		GL11.glColor3d(1.0, 0.0, 0.0);
+		GL11.glColor3d(color.getRed(), color.getGreen(), color.getBlue());
 		tessellator.startDrawing(GL11.GL_LINES);
 
 		tessellator.addVertex(x+offset, y, z+offset);
@@ -218,6 +232,7 @@ public class OverlayRenderer {
 
 		tessellator.draw();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
 
 	private boolean canSkipDraw(CameraFrustum frustum, World world, PosInfo pos, float partialTick) {
