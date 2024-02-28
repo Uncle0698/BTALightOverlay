@@ -2,6 +2,7 @@ package lunaticuncle.btalightoverlay;
 
 import lunaticuncle.btalightoverlay.gui.TextBoxComponents;
 import lunaticuncle.btalightoverlay.mixin.interfaces.IOptions;
+import lunaticuncle.btalightoverlay.option.ConfigOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.options.components.KeyBindingComponent;
 import net.minecraft.client.gui.options.components.OptionsCategory;
@@ -10,31 +11,40 @@ import net.minecraft.client.gui.options.data.OptionsPages;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.toml.Toml;
 
-import static lunaticuncle.btalightoverlay.BTALightOverlay.MOD_ID;
+import java.util.ArrayList;
 
+import static lunaticuncle.btalightoverlay.BTALightOverlay.MOD_ID;
 public class BTALightOverlayInit {
-	public static TomlConfigHandler tomlConfigHandler;
+	public static ModConfigHandler modConfigHandler;
 
 	public static void initTOMLConfig() {
+		ArrayList<ConfigOption<?>> options = new ArrayList<>();
 		Toml toml = new Toml("BTA Light Overlay configurations.");
 
 		toml.addCategory("General settings","general");
-			toml.addEntry("general.rangeVertical","The vertical range of the light overlay, range: 1-32", 6);
-			toml.addEntry("general.rangeHorizontal","The horizontal range of the light overlay, range: 1-32", 24);
-			toml.addEntry("general.markersCondition", "When should markers be shown, values: never, spawnable, always", "spawnable");
-			toml.addEntry("general.numbers", "Which light value should be shown, values: none, block, sky, both", "none");
-			toml.addEntry("general.updateInterval", "How often should the light overlay update in ticks, range: 1-20", 20);
+		addTOMLConfig(toml, Configs.General.VERTICAL_RANGE, options);
+		addTOMLConfig(toml, Configs.General.HORIZONTAL_RANGE, options);
+		addTOMLConfig(toml, Configs.General.MARKERS_CONDITION, options);
+		addTOMLConfig(toml, Configs.General.NUMBERS_MODE, options);
+		addTOMLConfig(toml, Configs.General.UPDATE_INTERVAL, options);
 
 		toml.addCategory("Color values settings","colors");
-			toml.addEntry("colors.markerColorDark","The hostile spawnable spot color for marker", "#ff0000");
-			toml.addEntry("colors.markerColorBlockLit", "The safe spot color for marker", "#007f00");
-			toml.addEntry("colors.markerColorSkyLit", "The safe spot (during day and clear weather) color for marker", "#ffff00");
-			toml.addEntry("colors.numberColorBlockDark","The hostile spawnable spot color for block light value", "#ff0000");
-			toml.addEntry("colors.numberColorBlockLit", "The safe spot color for block light value", "#00ff00");
-			toml.addEntry("colors.numberColorSkyDark","The hostile spawnable spot color for sky light value", "#ffff00");
-			toml.addEntry("colors.numberColorSkyLit", "The safe spot color for sky light value", "#00ffff");
+		addTOMLConfig(toml, Configs.Colors.MARKER_DARK, options);
+		addTOMLConfig(toml, Configs.Colors.MARKER_BLOCK_LIT, options);
+		addTOMLConfig(toml, Configs.Colors.MARKER_SKY_LIT, options);
+		addTOMLConfig(toml, Configs.Colors.NUMBER_BLOCK_DARK, options);
+		addTOMLConfig(toml, Configs.Colors.NUMBER_BLOCK_LIT, options);
+		addTOMLConfig(toml, Configs.Colors.NUMBER_SKY_DARK, options);
+		addTOMLConfig(toml, Configs.Colors.NUMBER_SKY_LIT, options);
 
-		tomlConfigHandler = new TomlConfigHandler(MOD_ID, toml);
+		modConfigHandler = new ModConfigHandler(MOD_ID, new TomlConfigHandler(MOD_ID, toml));
+		modConfigHandler.addOptions(options);
+		modConfigHandler.init();
+	}
+
+	private static void addTOMLConfig(Toml toml, ConfigOption<?> option, ArrayList<ConfigOption<?>> options) {
+		toml.addEntry(option.getName(), option.getComment(), option.value);
+		options.add(option);
 	}
 
 	public static IOptions modSettings;
