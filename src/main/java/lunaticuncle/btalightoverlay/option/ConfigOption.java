@@ -8,7 +8,7 @@ public abstract class ConfigOption<T> {
 	private final String translatedName;
 	private final String comment;
 	protected final T defaultValue;
-	public T value;
+	protected T value;
 
 	protected ConfigOption(String name, String translatedName, String comment, T defaultValue) {
 		this.name = name;
@@ -41,4 +41,13 @@ public abstract class ConfigOption<T> {
 	public T getDefaultValue() {
 		return this.defaultValue;
 	}
+	public void setValueDefault() {
+		this.value = this.defaultValue;
+	}
+
+	public T getValue() {
+		return this.value;
+	}
+
+	public abstract void setValue(T value);
 }

@@ -38,13 +38,13 @@ public class OverlayRenderer {
 		this.surroundingPos = new ArrayList<>();
 		this.isWorldInit = false;
 
-		colorNumberBlockDark = decode(Configs.Colors.NUMBER_BLOCK_DARK.value);
-		colorNumberBlockLit = decode(Configs.Colors.NUMBER_BLOCK_LIT.value);
-		colorNumberSkyDark = decode(Configs.Colors.NUMBER_SKY_DARK.value);
-		colorNumberSkyLit = decode(Configs.Colors.NUMBER_SKY_LIT.value);
-		colorMarkerDark = decode(Configs.Colors.MARKER_DARK.value);
-		colorMarkerBlockLit = decode(Configs.Colors.MARKER_BLOCK_LIT.value);
-		colorMarkerSkyLit = decode(Configs.Colors.MARKER_SKY_LIT.value);
+		colorNumberBlockDark = decode(Configs.Colors.NUMBER_BLOCK_DARK.getValue());
+		colorNumberBlockLit = decode(Configs.Colors.NUMBER_BLOCK_LIT.getValue());
+		colorNumberSkyDark = decode(Configs.Colors.NUMBER_SKY_DARK.getValue());
+		colorNumberSkyLit = decode(Configs.Colors.NUMBER_SKY_LIT.getValue());
+		colorMarkerDark = decode(Configs.Colors.MARKER_DARK.getValue());
+		colorMarkerBlockLit = decode(Configs.Colors.MARKER_BLOCK_LIT.getValue());
+		colorMarkerSkyLit = decode(Configs.Colors.MARKER_SKY_LIT.getValue());
 	}
 
 	public void update(Minecraft mc) {
@@ -56,7 +56,7 @@ public class OverlayRenderer {
 		EntityPlayerSP thePlayer = mc.thePlayer;
 		// Clamp to 1-20
 		@SuppressWarnings("ManualMinMaxCalculation")
-		int interval = Configs.General.UPDATE_INTERVAL.value > 20 ? 20 : (Configs.General.UPDATE_INTERVAL.value < 1 ? 1 : Configs.General.UPDATE_INTERVAL.value);
+		int interval = Configs.General.UPDATE_INTERVAL.getValue() > 20 ? 20 : (Configs.General.UPDATE_INTERVAL.getValue() < 1 ? 1 : Configs.General.UPDATE_INTERVAL.getValue());
 
 		if(ticks > interval || !isWorldInit) {
 			ticks = 0;
@@ -100,8 +100,8 @@ public class OverlayRenderer {
                 offsetY = (meta + 1) * 0.125;
             }
 
-			String numbersMode = Configs.General.NUMBERS_MODE.value;
-			String markersCondition = Configs.General.MARKERS_CONDITION.value;
+			String numbersMode = Configs.General.NUMBERS_MODE.getValue();
+			String markersCondition = Configs.General.MARKERS_CONDITION.getValue();
 			if(!numbersMode.equalsIgnoreCase("none")) {
 				drawNumber(mc.fontRenderer, queryPos, Direction.getHorizontalDirection(thePlayer.yRot), offsetY);
 			}
@@ -177,7 +177,7 @@ public class OverlayRenderer {
 		GL11.glPushMatrix(); // Scaling
 		GL11.glScaled(0.05, 0.05, 0.05);
 
-		String mode = Configs.General.NUMBERS_MODE.value;
+		String mode = Configs.General.NUMBERS_MODE.getValue();
 		Color color;
 		if(mode.equalsIgnoreCase("block") || mode.equalsIgnoreCase("both")) {
 			String num = String.valueOf(pos.lightLevelBlock);
@@ -206,7 +206,7 @@ public class OverlayRenderer {
 	}
 
 	private void drawMarker(Tessellator tessellator, PosInfo pos, double offsetY) {
-		if(pos.lightLevelBlock > 0 && !Configs.General.MARKERS_CONDITION.value.equalsIgnoreCase("always")) {
+		if(pos.lightLevelBlock > 0 && !Configs.General.MARKERS_CONDITION.getValue().equalsIgnoreCase("always")) {
 			return;
 		}
 
@@ -265,9 +265,9 @@ public class OverlayRenderer {
 		this.surroundingPos = new ArrayList<>();
 		// Clamp to 1-32
 		@SuppressWarnings("ManualMinMaxCalculation")
-		int horizontalRange = Configs.General.HORIZONTAL_RANGE.value > 32 ? 32 : (Configs.General.HORIZONTAL_RANGE.value < 1 ? 1 : Configs.General.HORIZONTAL_RANGE.value);
+		int horizontalRange = Configs.General.HORIZONTAL_RANGE.getValue() > 32 ? 32 : (Configs.General.HORIZONTAL_RANGE.getValue() < 1 ? 1 : Configs.General.HORIZONTAL_RANGE.getValue());
 		@SuppressWarnings("ManualMinMaxCalculation")
-		int verticalRange = Configs.General.VERTICAL_RANGE.value > 32 ? 32 : (Configs.General.VERTICAL_RANGE.value < 1 ? 1 : Configs.General.VERTICAL_RANGE.value);
+		int verticalRange = Configs.General.VERTICAL_RANGE.getValue() > 32 ? 32 : (Configs.General.VERTICAL_RANGE.getValue() < 1 ? 1 : Configs.General.VERTICAL_RANGE.getValue());
 
 		PosInfo playerCoordinate = getPlayerCoordinate(thePlayer);
 		for(int dx = -horizontalRange; dx <= horizontalRange; ++dx) {

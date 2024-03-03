@@ -6,11 +6,11 @@ import lunaticuncle.btalightoverlay.option.ConfigString;
 
 public class Configs {
 	public static class General {
-		public static final ConfigInteger VERTICAL_RANGE = new ConfigInteger("general.rangeVertical", "Vertical Range", "The vertical range of the light overlay, range: 1-32", 16);
-		public static final ConfigInteger HORIZONTAL_RANGE = new ConfigInteger("general.rangeHorizontal", "Horizontal Range", "The horizontal range of the light overlay, range: 1-32", 16);
+		public static final ConfigInteger VERTICAL_RANGE = new ConfigInteger("general.rangeVertical", "Vertical Range", "The vertical range of the light overlay, range: 1-32", 16, 1, 32);
+		public static final ConfigInteger HORIZONTAL_RANGE = new ConfigInteger("general.rangeHorizontal", "Horizontal Range", "The horizontal range of the light overlay, range: 1-32", 16, 1, 32);
 		public static final ConfigString MARKERS_CONDITION = new ConfigString("general.markersCondition", "Markers Condition", "When should markers be shown, values: never, spawnable, always", "spawnable");
 		public static final ConfigString NUMBERS_MODE = new ConfigString("general.numbers", "Numbers Mode", "Which light value should be shown, values: none, block, sky, both", "none");
-		public static final ConfigInteger UPDATE_INTERVAL = new ConfigInteger("general.updateInterval", "Update Interval", "How often should the light overlay update in ticks, range: 1-20", 20);
+		public static final ConfigInteger UPDATE_INTERVAL = new ConfigInteger("general.updateInterval", "Update Interval", "How often should the light overlay update in ticks, range: 1-20", 20, 1, 20);
 	}
 
 	public static class Colors {

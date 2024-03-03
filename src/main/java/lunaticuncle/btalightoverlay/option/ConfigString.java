@@ -11,4 +11,9 @@ public class ConfigString extends ConfigOption<String>{
 	public void read(TomlConfigHandler tomlConfigHandler) {
 		this.value = tomlConfigHandler.getString(this.getName());
 	}
+
+	@Override
+	public void setValue(String value) {
+		this.value = value;
+	}
 }

@@ -1,5 +1,6 @@
 package lunaticuncle.btalightoverlay;
 
+import lunaticuncle.btalightoverlay.gui.IntegerOptionComponent;
 import lunaticuncle.btalightoverlay.gui.TextBoxComponents;
 import lunaticuncle.btalightoverlay.mixin.interfaces.IOptions;
 import lunaticuncle.btalightoverlay.option.ConfigOption;
@@ -43,7 +44,7 @@ public class BTALightOverlayInit {
 	}
 
 	private static void addTOMLConfig(Toml toml, ConfigOption<?> option, ArrayList<ConfigOption<?>> options) {
-		toml.addEntry(option.getName(), option.getComment(), option.value);
+		toml.addEntry(option.getName(), option.getComment(), option.getValue());
 		options.add(option);
 	}
 
@@ -56,6 +57,9 @@ public class BTALightOverlayInit {
 		modSettings = (IOptions) Minecraft.getMinecraft(Minecraft.class).gameSettings;
 
 		BTALightOverlayOptions = new OptionsPage("btalightoverlay.options.title")
+			.withComponent(new OptionsCategory("btalightoverlay.options.category.general")
+				.withComponent(new IntegerOptionComponent(Configs.General.VERTICAL_RANGE))
+				.withComponent(new IntegerOptionComponent(Configs.General.HORIZONTAL_RANGE)))
 			.withComponent(new OptionsCategory("btalightoverlay.options.category.keybinds")
 				.withComponent(new KeyBindingComponent(modSettings.bTALightOverlay$getKeyToggleLightOverlay())));
 
