@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static lunaticuncle.btalightoverlay.BTALightOverlayInit.modConfigHandler;
+
 @Mixin(value = GuiOptions.class, remap = false)
 public class GuiOptionsMixin {
 
@@ -20,6 +22,9 @@ public class GuiOptionsMixin {
 		}
 	}
 
-	
+	@Inject(method = "onClosed", at = @At(value = "TAIL"))
+	private void onClosed(CallbackInfo ci) {
+		modConfigHandler.saveConfig();
+	}
 
 }
