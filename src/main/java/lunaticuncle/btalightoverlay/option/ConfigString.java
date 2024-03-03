@@ -3,8 +3,8 @@ package lunaticuncle.btalightoverlay.option;
 import turniplabs.halplibe.util.TomlConfigHandler;
 
 public class ConfigString extends ConfigOption<String>{
-	public ConfigString(String name, String translatedName, String comment, String defaultValue) {
-		super(name, translatedName, comment, defaultValue);
+	public ConfigString(String modID, String name, String comment, String defaultValue) {
+		super(modID, name, comment, defaultValue);
 	}
 
 	@Override

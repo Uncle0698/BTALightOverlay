@@ -2,3 +2,7 @@ btalightoverlay.options.title=BTA Light Overlay
 btalightoverlay.options.category.keybinds.explicit=BTA Light Overlay Keybinds
 btalightoverlay.key.toggleoverlay=Toggle Light Overlay
 btalightoverlay.options.category.keybinds=Keybinds
+btalightoverlay.options.category.general=General
+btalightoverlay.general.rangeVertical=Vertical Range
+btalightoverlay.general.rangeHorizontal=Horizontal Range
+btalightoverlay.general.updateInterval=Update Interval

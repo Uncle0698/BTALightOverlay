@@ -59,7 +59,8 @@ public class BTALightOverlayInit {
 		BTALightOverlayOptions = new OptionsPage("btalightoverlay.options.title")
 			.withComponent(new OptionsCategory("btalightoverlay.options.category.general")
 				.withComponent(new IntegerOptionComponent(Configs.General.VERTICAL_RANGE))
-				.withComponent(new IntegerOptionComponent(Configs.General.HORIZONTAL_RANGE)))
+				.withComponent(new IntegerOptionComponent(Configs.General.HORIZONTAL_RANGE))
+				.withComponent(new IntegerOptionComponent(Configs.General.UPDATE_INTERVAL)))
 			.withComponent(new OptionsCategory("btalightoverlay.options.category.keybinds")
 				.withComponent(new KeyBindingComponent(modSettings.bTALightOverlay$getKeyToggleLightOverlay())));
 

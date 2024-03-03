@@ -10,7 +10,7 @@ public class IntegerOptionComponent extends ButtonComponent {
 	private final IntegerSlider slider;
 
 	public IntegerOptionComponent(ConfigInteger option) {
-		super(option.getName());
+		super(option.getTranslateKey());
         this.option = option;
 		this.slider = new IntegerSlider(0, 0, 0, 150, 20, option.getValue().toString(), 8, option, 1);
     }

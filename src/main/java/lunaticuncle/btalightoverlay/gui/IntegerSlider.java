@@ -78,7 +78,8 @@ public class IntegerSlider extends GuiButton {
 			default:
 				fontColor = 16777120;
 		}
-		this.drawStringCentered(fontRenderer, this.option.getValue().toString(), this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, fontColor);
+		String displayString = this.option.prefix + this.option.getValue().toString() + this.option.postfix;
+		this.drawStringCentered(fontRenderer, displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, fontColor);
 	}
 
 	@Override
