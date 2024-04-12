@@ -6,6 +6,7 @@ import lunaticuncle.btalightoverlay.option.ConfigString;
 
 public class Configs {
 	public static class General {
+		//TODO: Make comment, prefix and postfix also translatable
 		public static final ConfigInteger VERTICAL_RANGE = new ConfigInteger(BTALightOverlay.MOD_ID, "general.rangeVertical","The vertical range of the light overlay, range: 1-32", 16, 1, 32, "", " blocks");
 		public static final ConfigInteger HORIZONTAL_RANGE = new ConfigInteger(BTALightOverlay.MOD_ID,"general.rangeHorizontal", "The horizontal range of the light overlay, range: 1-32", 16, 1, 32, "", " blocks");
 		public static final ConfigString MARKERS_CONDITION = new ConfigString(BTALightOverlay.MOD_ID,"general.markersCondition", "When should markers be shown, values: never, spawnable, always", "spawnable");
