@@ -32,7 +32,7 @@
 
   "depends": {
     "fabricloader": ">=0.15.5",
-		"halplibe": ">=3.4.16"
+		"halplibe": ">=3.5.2"
   },
   "suggests": {
   }
