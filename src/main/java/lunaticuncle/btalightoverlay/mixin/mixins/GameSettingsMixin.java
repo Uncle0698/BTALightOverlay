@@ -3,6 +3,7 @@ package lunaticuncle.btalightoverlay.mixin.mixins;
 import lunaticuncle.btalightoverlay.mixin.interfaces.IOptions;
 import net.minecraft.client.option.GameSettings;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.input.InputDevice;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -12,7 +13,7 @@ import static org.lwjgl.input.Keyboard.KEY_F9;
 public class GameSettingsMixin implements IOptions {
 
 	@Unique
-	public final KeyBinding keyToggleLightOverlay = new KeyBinding("btalightoverlay.key.toggleoverlay").bindKeyboard(KEY_F9);
+	public final KeyBinding keyToggleLightOverlay = new KeyBinding("btalightoverlay.key.toggleoverlay").bind(InputDevice.keyboard, KEY_F9);
 
 
 	@Override
