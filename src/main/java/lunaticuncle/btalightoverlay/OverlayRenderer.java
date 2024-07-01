@@ -3,7 +3,7 @@ package lunaticuncle.btalightoverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.client.render.FontRenderer;
-import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.client.render.camera.ICamera;
 import net.minecraft.client.render.culling.CameraFrustum;
 import net.minecraft.core.block.*;
