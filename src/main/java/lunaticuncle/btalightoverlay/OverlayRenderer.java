@@ -1,8 +1,8 @@
 package lunaticuncle.btalightoverlay;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.EntityPlayerSP;
-import net.minecraft.client.render.FontRenderer;
+import net.minecraft.client.entity.player.PlayerLocal;
+import net.minecraft.client.render.Font;
 import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.client.render.camera.ICamera;
 import net.minecraft.client.render.culling.CameraFrustum;
@@ -53,7 +53,7 @@ public class OverlayRenderer {
 			return;
 		}
 
-		EntityPlayerSP thePlayer = mc.thePlayer;
+		PlayerLocal thePlayer = mc.thePlayer;
 		// Clamp to 1-20
 		@SuppressWarnings("ManualMinMaxCalculation")
 		int interval = Configs.General.UPDATE_INTERVAL > 20 ? 20 : (Configs.General.UPDATE_INTERVAL < 1 ? 1 : Configs.General.UPDATE_INTERVAL);
@@ -76,8 +76,8 @@ public class OverlayRenderer {
 
 		ICamera cam = mc.activeCamera;
 		CameraFrustum frustum = new CameraFrustum(cam);
-		World world = mc.theWorld;
-		EntityPlayerSP thePlayer = mc.thePlayer;
+		World world = mc.currentWorld;
+		PlayerLocal thePlayer = mc.thePlayer;
 		Tessellator tessellator = Tessellator.instance;
 
 		GL11.glPushMatrix(); // World Render start
@@ -89,21 +89,23 @@ public class OverlayRenderer {
                 continue;
             }
 
-            Block block = Block.blocksList[world.getBlockId(queryPos.x, queryPos.y, queryPos.z)];
-            double offsetY = 0;
+			double offsetY = 0;
+			if (Blocks.blocksList[world.getBlockId(queryPos.x, queryPos.y, queryPos.z)] != null) {
+            BlockLogic block = Blocks.blocksList[world.getBlockId(queryPos.x, queryPos.y, queryPos.z)].getLogic();
 
-            if (block instanceof BlockLayerBase) {
+            if (block instanceof BlockLogicLayerBase) {
                 int meta = world.getBlockMetadata(queryPos.x, queryPos.y, queryPos.z);
-                if (block instanceof BlockLayerLeaves) {
+                if (block instanceof BlockLogicLayerLeaves) {
                     meta -= 128;
                 }
                 offsetY = (meta + 1) * 0.125;
             }
+			}
 
 			String numbersMode = Configs.General.NUMBERS_MODE;
 			String markersCondition = Configs.General.MARKERS_CONDITION;
 			if(!numbersMode.equalsIgnoreCase("none")) {
-				drawNumber(mc.fontRenderer, queryPos, Direction.getHorizontalDirection(thePlayer.yRot), offsetY);
+				drawNumber(mc.font, queryPos, Direction.getHorizontalDirection(thePlayer.yRot), offsetY);
 			}
 			if(!markersCondition.equalsIgnoreCase("never")) {
 				drawMarker(tessellator, queryPos, offsetY);
@@ -113,15 +115,15 @@ public class OverlayRenderer {
 		GL11.glPopMatrix(); // World Render end
 	}
 
-	private PosInfo getPlayerCoordinate(EntityPlayerSP thePlayer) {
-		double x = MathHelper.floor_double(thePlayer.x);
-		double y = MathHelper.floor_double(thePlayer.y);
-		double z = MathHelper.floor_double(thePlayer.z);
+	private PosInfo getPlayerCoordinate(PlayerLocal thePlayer) {
+		double x = MathHelper.floor(thePlayer.x);
+		double y = MathHelper.floor(thePlayer.y);
+		double z = MathHelper.floor(thePlayer.z);
 
 		return new PosInfo((int) x, (int) y, (int) z);
 	}
 
-	private void drawNumber(FontRenderer fontRenderer, PosInfo pos, Direction facing, double offsetY) {
+	private void drawNumber(Font fontRenderer, PosInfo pos, Direction facing, double offsetY) {
 		double x = pos.x;
 		double y = pos.y - 1 + offsetY;
 		double z = pos.z;
@@ -242,7 +244,7 @@ public class OverlayRenderer {
 		int y = pos.y;
 		int z = pos.z;
 		return !canSpawnAt(world, x, y, z) || isTopSolid(world, x, y, z)
-			|| !frustum.isVisible(new AABB(x + 1, y, z + 1, x - 1, y, z - 1), partialTick);
+			|| !frustum.isVisible(AABB.getPermanentBB(x + 1, y, z + 1, x - 1, y, z - 1), partialTick);
 	}
 
 	//Copied from SpawnerMobs
@@ -251,17 +253,20 @@ public class OverlayRenderer {
 	}
 
 	private boolean isTopSolid(World world, int x, int y, int z) {
-		Block block = Block.blocksList[world.getBlockId(x, y, z)];
-		return (block instanceof BlockGlass) || (block instanceof BlockGlassTinted)
-			|| (block instanceof BlockIce) || (block instanceof BlockLeavesBase)
-			|| (block instanceof BlockPressurePlate);
+		if (Blocks.blocksList[world.getBlockId(x, y, z)] == null) {
+			return false;
+		}
+		BlockLogic block = Blocks.blocksList[world.getBlockId(x, y, z)].getLogic();
+		return (block instanceof BlockLogicGlass) || (block instanceof BlockLogicGlassTinted)
+			|| (block instanceof BlockLogicIce) || (block instanceof BlockLogicLeavesBase)
+			|| (block instanceof BlockLogicPressurePlate);
 	}
 
 	public void toggleRender() {
 		this.canRender = !this.canRender;
 	}
 
-	private void updatePos(EntityPlayerSP thePlayer) {
+	private void updatePos(PlayerLocal thePlayer) {
 		this.surroundingPos = new ArrayList<>();
 		// Clamp to 1-32
 		@SuppressWarnings("ManualMinMaxCalculation")
@@ -281,7 +286,7 @@ public class OverlayRenderer {
 	}
 
 	private void updateLightLevels(Minecraft mc) {
-		World world = mc.theWorld;
+		World world = mc.currentWorld;
 
 		for(PosInfo queryPos : this.surroundingPos) {
             queryPos.lightLevelBlock = world.getSavedLightValue(LightLayer.Block, queryPos.x, queryPos.y, queryPos.z);

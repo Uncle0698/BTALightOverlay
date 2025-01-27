@@ -1,20 +1,20 @@
 package lunaticuncle.btalightoverlay.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.TextFieldElement;
 import net.minecraft.client.gui.options.components.OptionsComponent;
-import net.minecraft.client.render.FontRenderer;
+import net.minecraft.client.render.Font;
 import net.minecraft.core.lang.I18n;
 
 
 public class TextBoxComponent implements OptionsComponent {
-	private static final Minecraft mc = Minecraft.getMinecraft(TextBoxComponent.class);
-	private final GuiTextField textField;
+	private static final Minecraft mc = Minecraft.getMinecraft();
+	private final TextFieldElement textField;
 	private final String translationKey;
 
 
 	public TextBoxComponent(String translationKey, String placeholder) {
-		this.textField = new GuiTextField(null, mc.fontRenderer, 0, 0, 120, 18, "", placeholder);
+		this.textField = new TextFieldElement(null, mc.font, 0, 0, 120, 18, "", placeholder);
 		this.textField.setMaxStringLength(20);
 		this.translationKey = translationKey;
 	}
@@ -27,7 +27,7 @@ public class TextBoxComponent implements OptionsComponent {
 
 	@Override
 	public void render(int x, int y, int width, int relativeMouseX, int relativeMouseY) {
-		FontRenderer fontRenderer = mc.fontRenderer;
+		Font fontRenderer = mc.font;
 
 		String translated = I18n.getInstance().translateKey(this.translationKey);
 		int textColor = -1; //Normal white color

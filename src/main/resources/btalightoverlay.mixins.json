@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "GameSettingsMixin",
-    "GuiOptionsMixin",
+    "ScreenOptionsMixin",
     "WorldRendererMixin"
   ],
   "client": [
