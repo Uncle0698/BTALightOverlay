@@ -1,3 +1,6 @@
+# No longer maintained
+Go check out this [version](https://modrinth.com/mod/bta-light-overlay) by gungun974!
+
 # BTA Light Overlay
 Light up your world more efficiently!
 
