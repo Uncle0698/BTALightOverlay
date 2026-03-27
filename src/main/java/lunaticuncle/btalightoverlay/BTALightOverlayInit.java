@@ -8,6 +8,7 @@ import net.minecraft.client.gui.options.components.OptionsCategory;
 import net.minecraft.client.gui.options.data.OptionsPage;
 import net.minecraft.client.gui.options.data.OptionsPages;
 import net.minecraft.core.block.Block;
+import net.minecraft.core.block.Blocks;
 import net.minecraft.core.item.ItemStack;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.toml.Toml;
@@ -45,9 +46,9 @@ public class BTALightOverlayInit {
 	public static OverlayRenderer overlayRenderer;
 
 	public static void initMod() {
-		modSettings = (IOptions) Minecraft.getMinecraft(Minecraft.class).gameSettings;
+		modSettings = (IOptions) Minecraft.getMinecraft().gameSettings;
 
-		BTALightOverlayOptions = new OptionsPage("btalightoverlay.options.title", new ItemStack(Block.glowstone))
+		BTALightOverlayOptions = new OptionsPage("btalightoverlay.options.title", new ItemStack(Blocks.GLOWSTONE))
 			.withComponent(new OptionsCategory("btalightoverlay.options.category.keybinds")
 				.withComponent(new KeyBindingComponent(modSettings.bTALightOverlay$getKeyToggleLightOverlay())));
 

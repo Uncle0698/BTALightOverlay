@@ -2,6 +2,7 @@ package lunaticuncle.btalightoverlay.mixin.mixins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.InputDevice;
+import net.minecraft.client.world.WorldClient;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,7 +17,7 @@ import static lunaticuncle.btalightoverlay.BTALightOverlayInit.overlayRenderer;
 @Mixin(value = Minecraft.class, remap = false)
 public class MinecraftMixin {
 	@Shadow
-	public World theWorld;
+	public WorldClient currentWorld;
 	@Shadow
 	private static Minecraft INSTANCE;
 
@@ -30,7 +31,7 @@ public class MinecraftMixin {
 
 	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Ljava/lang/System;currentTimeMillis()J", ordinal = 2, shift = At.Shift.BEFORE))
 	private void BTALightOverlayUpdate(CallbackInfo ci) {
-		if(theWorld != null) {
+		if(currentWorld != null) {
 			overlayRenderer.update(INSTANCE);
 		}
 	}
